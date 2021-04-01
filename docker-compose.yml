@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  mariadb:
+    image: 'docker.io/bitnami/mariadb:10.2-debian-10'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bi_user
+      - MARIADB_DATABASE=bi_database
+      - MARIADB_PASSWORD=bi_password
+
+  bitest:
+    tty: true
+    image: docker.io/bitnami/laravel:8-debian-10
+    environment:
+      - DB_HOST=mariadb
+      - DB_USERNAME=bi_user
+      - DB_DATABASE=bi_database
+      - DB_PASSWORD=bi_password
+    depends_on:
+      - mariadb
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app
+    # privileged: true # Privileged mode could be required to run this container under Windows
